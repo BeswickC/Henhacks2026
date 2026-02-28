@@ -1,10 +1,18 @@
 import cv2
+import time
 from ultralytics import YOLO
+from logic import evaluate_state
+from scoring import ScoringEngine
 
 
 model = YOLO("best.pt")
 
 cap = cv2.VideoCapture(1)
+
+scoring = ScoringEngine()
+scoring.start_session()
+
+last_print = time.time()
 
 while True:
     ret, frame = cap.read()
@@ -34,7 +42,27 @@ while True:
                         cv2.FONT_HERSHEY_SIMPLEX,
                         0.5,
                         (0,255,0), 2)
-        print(label, conf, [x1, y1, x2, y2])
+
+    state = evaluate_state(detections)
+
+    if state["distracted"]:
+        current_state = "distracted"
+    elif state["productive"]:
+        current_state = "productive"
+    else:
+        current_state = "neutral"
+
+    scoring.update_time(current_state)
+
+    if time.time() - last_print >= 1.0:
+        print("state:", current_state, "percents:", scoring.get_percentages())
+        last_print = time.time()
+
+    cv2.putText(frame, f"STATE: {current_state.upper()}",
+                (10, 30),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.8,
+                (255, 255, 255), 2)
 
     cv2.imshow("YOLO Detection", frame)
 
