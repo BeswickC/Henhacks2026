@@ -31,3 +31,9 @@ Features-
  5. Main thread (main.py)
     - Launches the vision seperatly from the UI
     - Controls threading 
+--------------------------------------------------------------------------------------
+
+
+
+Building and Running
+1. 
