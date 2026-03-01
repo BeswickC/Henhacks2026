@@ -7,19 +7,25 @@ from ui import App
 
 #
 def main():
-    state_queue = Queue(1)
-    scoring = ScoringEngine
-    running = True
+    state_queue = Queue(maxsize=1)
+    scoring = ScoringEngine()
+
+    running = {"value": True}
 
     def stop_flag():
-        return not running
+        return not running["value"]
     
-    vision_thread = threading.Thread(target=vision_loop, args=(state_queue,), kwargs={
+    vision_thread = threading.Thread(
+        target=vision_loop,
+        args=(state_queue,),
+        kwargs={
             "model_path": "best.pt",
             "cam_index": 1,
             "conf": 0.25,
             "stop_flag": stop_flag
-        }, daemon = True)
+        },
+        daemon=True
+    )
     
     vision_thread.start()
 
@@ -28,8 +34,9 @@ def main():
 
     app = App(state_queue, scoring, shutdown)
     app.run()
+
     shutdown()
-    vision_thread.join(2)
+    vision_thread.join(timeout=2)
 
 
 if __name__ == "__main__":
