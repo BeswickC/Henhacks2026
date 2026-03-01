@@ -36,4 +36,11 @@ Features-
 
 
 Building and Running
-1. 
+Install dependencies
+'''
+pip install ultralytics opencv-python
+'''
+Run:
+'''
+python main.py
+'''
