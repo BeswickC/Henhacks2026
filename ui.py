@@ -15,6 +15,7 @@ class Smoother:
             "neutral": 0.8
         }
 
+
     def update(self, state):
         now = time.time()
 
@@ -58,7 +59,30 @@ class App:
         self.root.resizable(False, False)
 
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
+        style = ttk.Style(self.root)
+        style.theme_use("clam")
+        base_layout = style.layout("Horizontal.TProgressbar")
+        style.layout("Prod.Horizontal.TProgressbar", base_layout)
+        style.layout("Dist.Horizontal.TProgressbar", base_layout)
+        style.layout("Neut.Horizontal.TProgressbar", base_layout)
 
+        style.configure(
+            "Prod.Horizontal.TProgressbar",
+            troughcolor="#e5e7eb",
+            background="#22c55e"
+        )
+
+        style.configure(
+            "Dist.Horizontal.TProgressbar",
+            troughcolor="#e5e7eb",
+            background="#ef4444"
+        )
+
+        style.configure(
+            "Neut.Horizontal.TProgressbar",
+            troughcolor="#e5e7eb",
+            background="#9ca3af"
+        )
         self.smoother = Smoother()
 
         self.latest_state = "neutral"
@@ -100,19 +124,19 @@ class App:
         bars.pack(fill="x")
 
         ttk.Label(bars, text="Productive").grid(row=0, column=0, sticky="w")
-        self.pb_productive = ttk.Progressbar(bars, orient="horizontal", length=260, mode="determinate", maximum=100)
+        self.pb_productive = ttk.Progressbar(bars, orient="horizontal", length=260, mode="determinate", maximum=100,style="Prod.Horizontal.TProgressbar")
         self.pb_productive.grid(row=0, column=1, padx=8)
         self.lbl_productive = ttk.Label(bars, text="0%")
         self.lbl_productive.grid(row=0, column=2, sticky="e")
 
         ttk.Label(bars, text="Distracted").grid(row=1, column=0, sticky="w", pady=(8, 0))
-        self.pb_distracted = ttk.Progressbar(bars, orient="horizontal", length=260, mode="determinate", maximum=100)
+        self.pb_distracted = ttk.Progressbar(bars, orient="horizontal", length=260, mode="determinate", maximum=100,style="Dist.Horizontal.TProgressbar")
         self.pb_distracted.grid(row=1, column=1, padx=8, pady=(8, 0))
         self.lbl_distracted = ttk.Label(bars, text="0%")
         self.lbl_distracted.grid(row=1, column=2, sticky="e", pady=(8, 0))
 
         ttk.Label(bars, text="Neutral").grid(row=2, column=0, sticky="w", pady=(8, 0))
-        self.pb_neutral = ttk.Progressbar(bars, orient="horizontal", length=260, mode="determinate", maximum=100)
+        self.pb_neutral = ttk.Progressbar(bars, orient="horizontal", length=260, mode="determinate", maximum=100, style="Neut.Horizontal.TProgressbar")
         self.pb_neutral.grid(row=2, column=1, padx=8, pady=(8, 0))
         self.lbl_neutral = ttk.Label(bars, text="0%")
         self.lbl_neutral.grid(row=2, column=2, sticky="e", pady=(8, 0))
