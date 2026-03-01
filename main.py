@@ -19,11 +19,11 @@ def main():
         target=vision_loop,
         args=(state_queue,),
         kwargs={
-            "model_path": "best.pt",
+            "model_path": "models/best.pt",
             "cam_index": 1,
             "conf": 0.25,
             "stop_flag": stop_flag,
-            "show_preview": False
+            "show_preview": True
         },
         daemon=True
     )
