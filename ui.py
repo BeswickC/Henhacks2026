@@ -58,6 +58,7 @@ class App:
         self.root.geometry("420x260")
         self.root.resizable(False, False)
 
+
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
         style = ttk.Style(self.root)
         style.theme_use("clam")
