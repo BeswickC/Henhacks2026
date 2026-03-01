@@ -5,7 +5,7 @@ from vision import vision_loop
 from scoring import ScoringEngine
 from ui import App
 
-#
+#Can disable the video feed by changing "show_preview" to False
 def main():
     state_queue = Queue(maxsize=1)
     scoring = ScoringEngine()
@@ -22,7 +22,8 @@ def main():
             "model_path": "best.pt",
             "cam_index": 1,
             "conf": 0.25,
-            "stop_flag": stop_flag
+            "stop_flag": stop_flag,
+            "show_preview": False
         },
         daemon=True
     )

@@ -4,7 +4,7 @@ from logic import evaluate_state
 from queue import Empty
 
 
-def vision_loop(state_queue, model_path="best.pt", cam_index=1, conf=.25, stop_flag=None):
+def vision_loop(state_queue, model_path="best.pt", cam_index=1, conf=.25, stop_flag=None, show_preview=True):
     model = YOLO(model_path)
     cap = cv2.VideoCapture(cam_index)
 
@@ -36,6 +36,15 @@ def vision_loop(state_queue, model_path="best.pt", cam_index=1, conf=.25, stop_f
                     "bbox": [x1, y1, x2, y2]
                 })
 
+                if show_preview:
+                    label = model.names.get(cls, str(cls))
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                    cv2.putText(frame, f"{label} {obj_c:.2f}",
+                                (x1, max(20, y1 - 10)),
+                                cv2.FONT_HERSHEY_SIMPLEX,
+                                0.5,
+                                (0, 255, 0), 2)
+
         state = evaluate_state(detections)
 
         if state["distracted"]:
@@ -53,4 +62,21 @@ def vision_loop(state_queue, model_path="best.pt", cam_index=1, conf=.25, stop_f
 
         state_queue.put(current_state)
 
+        if show_preview:
+            cv2.putText(frame, f"STATE: {current_state.upper()}",
+                        (10, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.9,
+                        (255, 255, 255), 2)
+
+            cv2.imshow("FocusBar - Vision", frame)
+
+            key = cv2.waitKey(1) & 0xFF
+            if key == 27:  # ESC closes preview AND stops vision loop
+                break
+            if key == ord('q'):  # Q just hides preview window
+                cv2.destroyWindow("FocusBar - Vision")
+                show_preview = False
+
     cap.release()
+    cv2.destroyAllWindows()
